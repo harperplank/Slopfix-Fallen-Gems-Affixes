@@ -27,9 +27,22 @@ public class LootCategories {
         public static void bootstrap() {};
     }
 
+    public static class ScGunLootCategories {
+        public static final LootCategory GUNS = LootCategoryUtil.registerLootCategoryOrFalse("gun",
+                ALObjects.EquipmentSlotGroups.MAINHAND,
+                Check::gunCheck,
+                1200,
+                true
+        );
+        public static void bootstrap() {};
+    }
+
     public static void bootstrap(IEventBus bus) {
         if (ModList.get().isLoaded("irons_spellbooks") && !ModList.get().isLoaded("irons_apothic")) {
             ISSLootCategories.bootstrap();
+        }
+        if (ModList.get().isLoaded("scguns")) {
+            ScGunLootCategories.bootstrap();
         }
         bus.register(R);
     }
@@ -40,6 +53,13 @@ public class LootCategories {
         }
         public static boolean spellBookCheck(ItemStack i) {
             return i.getItem() instanceof SpellBook;
+        }
+        public static boolean gunCheck(ItemStack i) {
+            try {
+                return i.getItem() instanceof top.ribs.scguns.item.GunItem;
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
         }
     }
 }
